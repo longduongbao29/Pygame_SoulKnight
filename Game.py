@@ -2,6 +2,7 @@ import pygame
 from enum import Enum
 from AssetsManager import AssetsManager
 from Player import Player
+from Map import Map
 
 
 assetsManager = AssetsManager()
@@ -15,7 +16,12 @@ class Direction(Enum):
 class Game(object):
     def __init__(self):
         self.running = True
-        self.player = Player(300, 300)
+
+        self.level = 1
+        self.map = Map()
+        self.map.load(self.level)
+
+        self.player = Player(300, 0)
 
     def handleEvent(self):
         for event in pygame.event.get():
@@ -28,18 +34,18 @@ class Game(object):
                 elif event.key == pygame.K_d:
                     self.player.isMoving = True
                     self.player.direct = Direction.RIGHT
+                elif event.key == pygame.K_SPACE:
+                    self.player.isJumping = True
             elif event.type == pygame.KEYUP:
                 self.player.isMoving = False
                 self.player.idle()
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 self.player.isAttacking = True
                 self.player.attack()
-            # elif event.type == pygame.MOUSEBUTTONUP:
-            #     self.player.isAttacking = False
-            #     self.player.idle()
 
     def update(self):
         self.player.update()
 
     def render(self):
+        self.map.render()
         self.player.draw()

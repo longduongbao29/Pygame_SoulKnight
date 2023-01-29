@@ -20,8 +20,8 @@ while game.running:
     mainScreen.fill('white')
     clock.tick(60)
     game.handleEvent()
-    game.player.update()
-    game.player.draw()
+    game.update()
+    game.render()
     pygame.display.flip()
 
 

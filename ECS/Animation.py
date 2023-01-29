@@ -8,11 +8,14 @@ class Animation(object):
         self.frame = sheetwidth/(spite.width)
         self.speed = speed/10
         self.flip = flip
+        self.setIndex()
+        self.animationTime = self.frame/self.speed
+
+    def setIndex(self):
         if self.flip:
             self.index = self.frame-1
         else:
             self.index = 0
-        self.animationTime = self.frame/self.speed
 
     def update(self):
         if self.flip:
@@ -29,3 +32,4 @@ class Animation(object):
 
     def resetTime(self):
         self.animationTime = self.frame/self.speed
+        self.setIndex()
