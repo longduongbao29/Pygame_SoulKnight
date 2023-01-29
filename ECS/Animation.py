@@ -2,17 +2,17 @@ import pygame
 
 
 class Animation(object):
-    def __init__(self, sheet, speed=0, flip=False, scale=1):
+    def __init__(self, sheet, spite, speed=0, flip=False):
         self.sheet = sheet
         sheetwidth = sheet.get_width()
-        from ECS import Sprite
-        self.frame = sheetwidth/(Sprite.SPRITE_WIDTH*scale)
+        self.frame = sheetwidth/(spite.width)
         self.speed = speed/10
         self.flip = flip
         if self.flip:
             self.index = self.frame-1
         else:
             self.index = 0
+        self.animationTime = self.frame/self.speed
 
     def update(self):
         if self.flip:
@@ -25,3 +25,7 @@ class Animation(object):
                 self.index = 0
             else:
                 self.index += self.speed
+        self.animationTime -= 1
+
+    def resetTime(self):
+        self.animationTime = self.frame/self.speed

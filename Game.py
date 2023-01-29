@@ -34,9 +34,9 @@ class Game(object):
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 self.player.isAttacking = True
                 self.player.attack()
-            elif event.type == pygame.MOUSEBUTTONUP:
-                self.player.isAttacking = False
-                self.player.idle()
+            # elif event.type == pygame.MOUSEBUTTONUP:
+            #     self.player.isAttacking = False
+            #     self.player.idle()
 
     def update(self):
         self.player.update()

@@ -22,8 +22,8 @@ class AssetsManager(object):
     def __init__(self):
         self.spriteManager = Sprite()
         self.spriteManager.addSprite(
-            'knightIdle', 'assets/FreeKnight_v1/Colour1/Outline/120x80_PNGSheets/_Idle.png', 1)
+            'knightIdle', 'assets/FreeKnight_v1/Colour2/Outline/120x80_PNGSheets/_Idle.png', 1)
         self.spriteManager.addSprite(
-            'knightRun', 'assets/FreeKnight_v1/Colour1/Outline/120x80_PNGSheets/_Run.png', 1)
+            'knightRun', 'assets/FreeKnight_v1/Colour2/Outline/120x80_PNGSheets/_Run.png', 1)
         self.spriteManager.addSprite(
-            'knightAttack', 'assets/FreeKnight_v1/Colour1/Outline/120x80_PNGSheets/_Attack.png', 1)
+            'knightAttack', 'assets/FreeKnight_v1/Colour2/Outline/120x80_PNGSheets/_Attack2.png', 1)

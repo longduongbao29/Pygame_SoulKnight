@@ -1,5 +1,5 @@
 .git/
-ignore.gitignore
+.gitignore
 ECS/__pycache__/
 assets/Tiled/
 __pycache__/
