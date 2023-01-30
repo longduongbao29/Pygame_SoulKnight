@@ -35,14 +35,18 @@ class Player(object):
 
     def update(self):
         self.transform.setPositionBefore()
+        self.idle()
 
+        if self.isColliding:
+            self.isFalling = self.isJumping = False
+            self.fallingTime = 0
+        if not self.onGround():
+            self.isFalling = True
+
+        if self.isFalling:
+            self.fall()
         if self.isJumping:
             self.jump()
-        elif self.isFalling:
-            self.fall()
-        else:
-            self.fallingTime = 0
-            self.idle()
 
         if self.isAttacking:
             self.attack()
@@ -52,10 +56,9 @@ class Player(object):
         if self.isMoving:
             self.move()
         self.transform.update()
+        self.isColliding = self.checkCollison()
         self.sprite.update()
 
-        self.isColliding = self.checkCollison()
-        self.isFalling = not self.isColliding
         if self.isColliding:
             self.transform.resetPosition()
 
@@ -63,16 +66,18 @@ class Player(object):
 
         from Main import mainScreen
         pygame.draw.rect(mainScreen, (0, 255, 0), pygame.Rect(
-            self.transform.x, self.transform.y, KNIGHT_WIDTH, KNIGHT_HEIGHT))
+            self.transform.x+75, self.transform.y+75, KNIGHT_WIDTH-175, KNIGHT_HEIGHT-75))
+        pygame.draw.circle(mainScreen, (0, 0, 255),
+                           (self.transform.x+75+65/2, self.transform.y+160), 10)
         self.sprite.draw()
 
     def move(self):
         from Game import Direction
         from ECS import Vector
         if self.direct == Direction.LEFT:
-            self.transform.valocity = Vector.Vector(-1, 0)
+            self.transform.valocity.x = -1
         elif self.direct == Direction.RIGHT:
-            self.transform.valocity = Vector.Vector(1, 0)
+            self.transform.valocity.x = 1
         if not self.isFalling and not self.isJumping:
             self.sprite.playAnimation('run'+self.direct.value)
 
@@ -80,9 +85,8 @@ class Player(object):
         self.jumpTime += 1
         self.sprite.playAnimation('jump'+self.direct.value)
         self.valocity_0 += GRAVITY*self.jumpTime
-        self.transform.add(0, -self.valocity_0)
-        print(self.transform.x, self.transform.y,
-              self.transform.beforeX, self.transform.beforeY)
+        from ECS import Vector
+        self.transform.valocity.y = -self.valocity_0
         if self.jumpTime > JUMP_TIME:
             self.isJumping = False
             self.jumpTime = 0
@@ -97,7 +101,11 @@ class Player(object):
         self.fallingTime += 1
         self.sprite.playAnimation('fall'+self.direct.value)
         addY = float(1/2*GRAVITY*(self.fallingTime**2))
-        self.transform.add(0, addY)
+        from ECS import Vector
+        self.transform.valocity.y = addY
+
+    def attack(self):
+        self.sprite.playAnimation('attack'+self.direct.value)
 
     def checkCollison(self):
         from Main import game
@@ -109,11 +117,20 @@ class Player(object):
                 return True
         return False
 
-    def attack(self):
-        self.sprite.playAnimation('attack'+self.direct.value)
+    def onGround(self):
+        from Map import TILE_SIZE
+        from Main import game
+        midBottomX = self.transform.x+75+65/2
+        midBottomY = self.transform.y+160+10
+
+        mapX = int(midBottomX/TILE_SIZE)
+        mapY = int(midBottomY/TILE_SIZE)
+        if mapX >= game.map.mapWidth or mapY >= game.map.mapHeight:
+            return False
+        return int(game.map.mapArray[mapY][mapX]) == 1
 
     def getCollider(self):
-        return pygame.Rect(self.transform.x, self.transform.y, KNIGHT_WIDTH, KNIGHT_HEIGHT)
+        return pygame.Rect(self.transform.x+75, self.transform.y+75, KNIGHT_WIDTH-175, KNIGHT_HEIGHT-75)
 
     def loadSprite(self):
         from Game import assetsManager
